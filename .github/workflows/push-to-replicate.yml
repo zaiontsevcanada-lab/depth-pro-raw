@@ -7,7 +7,7 @@ on:
 
 jobs:
   push:
-    runs-on: ubuntu-latest-8-cores
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
