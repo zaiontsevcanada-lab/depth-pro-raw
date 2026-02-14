@@ -18,20 +18,32 @@ class Predictor(BasePredictor):
         """
         Load DepthPro model into GPU memory.
         This runs ONCE when the container starts.
-        Model weights (~1.5 GB) are downloaded from HuggingFace automatically.
+        Model weights are pre-cached during Docker build (see cog.yaml).
         """
+        import time
         from transformers import DepthProImageProcessorFast, DepthProForDepthEstimation
 
-        print("Loading DepthPro from HuggingFace...")
+        print("Loading DepthPro from cache...")
 
         self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
-        self.processor = DepthProImageProcessorFast.from_pretrained(
-            "apple/DepthPro-hf"
-        )
-        self.model = DepthProForDepthEstimation.from_pretrained(
-            "apple/DepthPro-hf"
-        ).to(self.device)
+        model_id = "apple/DepthPro-hf"
+        max_retries = 3
+
+        for attempt in range(1, max_retries + 1):
+            try:
+                self.processor = DepthProImageProcessorFast.from_pretrained(model_id)
+                self.model = DepthProForDepthEstimation.from_pretrained(
+                    model_id
+                ).to(self.device)
+                break
+            except OSError as e:
+                if attempt == max_retries:
+                    raise
+                print(f"Attempt {attempt}/{max_retries} failed: {e}")
+                print(f"Retrying in {attempt * 5}s...")
+                time.sleep(attempt * 5)
+
         self.model.eval()
 
         print(f"DepthPro loaded on {self.device}")

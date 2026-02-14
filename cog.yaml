@@ -12,5 +12,7 @@ build:
   system_packages:
     - "libgl1-mesa-glx"
     - "libglib2.0-0"
+  run:
+    - "python -c \"from transformers import DepthProImageProcessorFast, DepthProForDepthEstimation; DepthProImageProcessorFast.from_pretrained('apple/DepthPro-hf'); DepthProForDepthEstimation.from_pretrained('apple/DepthPro-hf')\""
 
 predict: "predict.py:Predictor"
