@@ -2,8 +2,8 @@ build:
   gpu: true
   python_version: "3.11"
   python_packages:
-    - "torch==2.1.0"
-    - "torchvision==0.16.0"
+    - "torch==2.5.1"
+    - "torchvision==0.20.1"
     - "transformers>=4.48.0"
     - "accelerate>=0.26.0"
     - "pillow>=10.0.0"
