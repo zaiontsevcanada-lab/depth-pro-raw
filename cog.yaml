@@ -14,3 +14,7 @@ build:
     - "libglib2.0-0"
 
 predict: "predict.py:Predictor"
+
+scale:
+  min: 1
+  max: 1
